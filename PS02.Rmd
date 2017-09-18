@@ -1,6 +1,6 @@
 ---
 title: "STAT/MATH 495: Problem Set 02"
-author: "Sara Culhane"
+author: "Sara Culhane, Meredith Manley, Brenna Sullivan"
 date: "2017-09-19"
 output:
   html_document:
