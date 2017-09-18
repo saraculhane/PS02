@@ -51,8 +51,6 @@ cor(train$full_sq,train$price_doc)
 
 ## Spline Visualization
 
-Used 
-
 ```{r}
 values <- data_frame(
   x = train2$full_sq,
