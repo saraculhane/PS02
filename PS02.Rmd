@@ -38,7 +38,9 @@ a + geom_density()
 
 Looking at the distribution of housing prices, they were right skewed with a median of 6,274,411 Russian Rubles (determine they were Rubles based on currency conversions).
 
-To choose a predictor we looked at several ggplots and determined that full_sq would be a resonable example though we did not do an exhaustive search. We also removed all observations over 2000 square feet but ulimately this only improved our Kaggle score slightly.  However, it greatly improved the correlation between the response and predictor.
+To choose a predictor we looked at several ggplots and determined that full_sq would be a resonable example though we did not do an exhaustive search.  Since the value of real estate is generally determined by size, we thought that this would be a fair starting place to 
+
+We also removed all observations over 2000 square feet but ulimately this only improved our Kaggle score slightly.  However, it greatly improved the correlation between the response and predictor.
 
 ```{r}
 train2 <- train[train$full_sq < 2000,]
@@ -49,11 +51,15 @@ cor(train$full_sq,train$price_doc)
 
 ## Spline Visualization
 
+Used 
+
 ```{r}
 values <- data_frame(
   x = train2$full_sq,
   y = train2$price_doc
 )
+
+
 
 
 values %>% 
@@ -71,10 +77,16 @@ smooth.spline(values$x, values$y, df=20) %>%
 
 # Model Fit
 
+Examining the outputs of these models based on 10,20 and 30 df, we found that 20 had the same R^2 as 30 but more significant knots (knots 24 through 27 wre not significant at at 0.05 alpha for df=30)
 
 ```{r}
 fit<-lm(y ~ bs(x,df=20),data = values )
 summary(fit)
+
+fit2<-lm(y ~ bs(x,df=10),data = values )
+fit3 <-lm(y ~ bs(x,df=30),data = values )
+summary(fit2)
+summary(fit3)
 f <- makeFun(fit)
 test$price_doc <- f(test$full_sq)
 sub  <- test[,c(1,length(test))]
@@ -87,4 +99,3 @@ sub  <- test[,c(1,length(test))]
 ```{r}
 write_csv(sub, "submission.csv")
 ```
-
