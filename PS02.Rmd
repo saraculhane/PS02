@@ -38,7 +38,7 @@ a + geom_density()
 
 Looking at the distribution of housing prices, they were right skewed with a median of 6,274,411 Russian Rubles (determine they were Rubles based on currency conversions).
 
-To choose a predictor we looked at several ggplots and determined that full_sq would be a resonable example though we did not do an exhaustive search.  Since the value of real estate is generally determined by size, we thought that this would be a fair starting place to 
+To choose a predictor we looked at several ggplots and determined that full_sq would be a resonable example though we did not do an exhaustive search.  Since the value of real estate is generally determined by size, we thought that this would be a fair starting place to test out splines and not to worry to much about predictor selection.
 
 We also removed all observations over 2000 square feet but ulimately this only improved our Kaggle score slightly.  However, it greatly improved the correlation between the response and predictor.
 

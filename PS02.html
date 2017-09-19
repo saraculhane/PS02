@@ -225,7 +225,7 @@ div.tocify {
 <div id="exploratory-data-analysis" class="section level1">
 <h1>Exploratory Data Analysis</h1>
 <p>Looking at the distribution of housing prices, they were right skewed with a median of 6,274,411 Russian Rubles (determine they were Rubles based on currency conversions).</p>
-<p>To choose a predictor we looked at several ggplots and determined that full_sq would be a resonable example though we did not do an exhaustive search. Since the value of real estate is generally determined by size, we thought that this would be a fair starting place to</p>
+<p>To choose a predictor we looked at several ggplots and determined that full_sq would be a resonable example though we did not do an exhaustive search. Since the value of real estate is generally determined by size, we thought that this would be a fair starting place to test out splines and not to worry to much about predictor selection.</p>
 <p>We also removed all observations over 2000 square feet but ulimately this only improved our Kaggle score slightly. However, it greatly improved the correlation between the response and predictor.</p>
 <pre class="r"><code>train2 &lt;- train[train$full_sq &lt; 2000,]
 ggplot(train2, aes(x=full_sq, y=price_doc)) + geom_point()</code></pre>
