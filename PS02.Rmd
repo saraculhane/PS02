@@ -1,14 +1,17 @@
 ---
-title: "STAT/MATH 495: Problem Set 02"
+title: 'STAT/MATH 495: Problem Set 02'
 author: "Sara Culhane, Meredith Manley, Brenna Sullivan"
-date: "2017-09-19"
+date: '2017-09-19'
 output:
   html_document:
-    toc: true
-    toc_float: true
+    collapsed: no
+    smooth_scroll: no
+    toc: yes
     toc_depth: 2
-    collapsed: false
-    smooth_scroll: false
+    toc_float: yes
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
 ---
 
 ```{r setup, include=FALSE}
@@ -20,6 +23,7 @@ library(dplyr)
 library(mosaic)
 library(broom)
 require(splines)
+library(gridExtra)
 # Note the relative file path, and not absolute file path:
 # http://www.coffeecup.com/help/articles/absolute-vs-relative-pathslinks/
 train <- read_csv("train.csv")
@@ -43,7 +47,7 @@ To choose a predictor we looked at several ggplots and determined that full_sq w
 We also removed all observations over 2000 square feet but ulimately this only improved our Kaggle score slightly.  However, it greatly improved the correlation between the response and predictor.
 
 ```{r}
-train2 <- train[train$full_sq < 2000,]
+train2 <- train[train$full_sq < 2000,] #observations of over 2000 removed from the data
 ggplot(train2, aes(x=full_sq, y=price_doc)) + geom_point()
 cor(train2$full_sq,train2$price_doc)
 cor(train$full_sq,train$price_doc)
@@ -63,19 +67,36 @@ values <- data_frame(
 values %>% 
   ggplot(aes(x=x)) +
   geom_point(aes(y=y))
-smooth.spline(values$x, values$y, df=20) %>%
+p1 <- smooth.spline(values$x, values$y, df=10) %>%
   broom::augment() %>% 
   ggplot(aes(x=x)) +
   geom_point(aes(y=y)) +
-  geom_line(aes(y=.fitted), col="blue", size=1)
-
-
-
+  geom_line(aes(y=.fitted), col="blue", size=1)+
+  xlab("Full Square Footage")+
+  ylab("Price in Russian Rubles")+
+  ggtitle("Fitted Spline",subtitle= "df=10")
+p2 <- smooth.spline(values$x, values$y, df=20) %>%
+  broom::augment() %>% 
+  ggplot(aes(x=x)) +
+  geom_point(aes(y=y)) +
+  geom_line(aes(y=.fitted), col="blue", size=1)+
+  xlab("Full Square Footage")+
+  ylab("Price in Russian Rubles")+
+  ggtitle("Fitted Spline",subtitle= "df=20")
+p3 <- smooth.spline(values$x, values$y, df=30) %>%
+  broom::augment() %>% 
+  ggplot(aes(x=x)) +
+  geom_point(aes(y=y)) +
+  geom_line(aes(y=.fitted), col="blue", size=1)+
+  xlab("Full Square Footage")+
+  ylab("Price in Russian Rubles")+
+  ggtitle("Fitted Spline",subtitle= "df=30")
+grid.arrange(p1, p2, p3,ncol=3)
 ```
 
 # Model Fit
 
-Examining the outputs of these models based on 10,20 and 30 df, we found that 20 had the same R^2 as 30 but more significant knots (knots 24 through 27 wre not significant at at 0.05 alpha for df=30)
+Examining the outputs of these models based on 10,20 and 30 df, we found that 20 had rougly the same adjusted $R^2$ as 30 but more significant knots (knots 24 through 27 wre not significant at at 0.05 alpha for df=30).  We also know that higher degrees of freedom tend to overfit, thus since the difference in adjusted $R^2$ seemed negligible, $df=20$ seems to be the better choice.
 
 ```{r}
 fit<-lm(y ~ bs(x,df=20),data = values )
@@ -97,3 +118,6 @@ sub  <- test[,c(1,length(test))]
 ```{r}
 write_csv(sub, "submission.csv")
 ```
+
+
+Our Kaggle score with our model was 0.4099.
